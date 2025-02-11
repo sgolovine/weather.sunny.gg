@@ -24,3 +24,6 @@ dist-ssr
 
 # cache
 .vite-cache
+
+# typescript
+.tsbuildinfo
