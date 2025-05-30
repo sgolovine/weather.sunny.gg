@@ -3,9 +3,10 @@ import { RainIcon, ThermometerIcon } from "./icons";
 
 interface Props {
   forecast?: Forecast | null;
+  isCelsiusPreferred: boolean;
 }
 
-const WeatherForecast: React.FC<Props> = ({ forecast }) => {
+const WeatherForecast: React.FC<Props> = ({ forecast, isCelsiusPreferred }) => {
   if (!!forecast && forecast.length) {
     return (
       <div>
@@ -22,7 +23,10 @@ const WeatherForecast: React.FC<Props> = ({ forecast }) => {
                   </span>
                   <span className="flex flex-row gap-2 w-[80px]">
                     <ThermometerIcon />
-                    {item.temperature.f}&deg; F
+                    {isCelsiusPreferred
+                      ? item.temperature.c
+                      : item.temperature.f}
+                    &deg; {isCelsiusPreferred ? "C" : "F"}
                   </span>
                 </span>
               </div>

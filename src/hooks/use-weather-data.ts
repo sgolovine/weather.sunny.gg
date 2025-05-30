@@ -6,8 +6,12 @@ import { getLatestObservation } from "../requests/get-latest-observation";
 import { useMemo } from "react";
 import { toCelsius, toFahrenheit } from "../util/temperature-converters";
 import type { Temperature, Forecast } from "../model/weather";
+import { TEMPERATURE_LOCAL_STORAGE_KEY } from "../constants";
 
 export const useWeatherData = (coords: GeolocationCoordinates | null) => {
+  const tempPref = window.localStorage.getItem(TEMPERATURE_LOCAL_STORAGE_KEY);
+  const isCelsiusPreferred = tempPref ? JSON.parse(tempPref) === "C" : false;
+
   // the first query we make is to get the points associated with
   // the users location. this will give us a URL to fetch the forecast
   // and a URL to fetch the nearby weather stations.
@@ -127,6 +131,7 @@ export const useWeatherData = (coords: GeolocationCoordinates | null) => {
   }, [forecastQuery?.data?.data?.properties]);
 
   return {
+    isCelsiusPreferred,
     isLoading: globalLoading || globalRefetching,
     isError: globalError || globalRefetchError,
     currentTemperature,
