@@ -1,5 +1,6 @@
-import viteLogo from "/vite.svg";
-import "./App.css";
+import Error from "./components/Error";
+import Loader from "./components/Loader";
+import WeatherForecast from "./components/WeatherForecast";
 import { useGeolocation } from "./hooks/use-geo-location";
 import { useWeatherData } from "./hooks/use-weather-data";
 
@@ -9,57 +10,45 @@ function App() {
     isLoading: weatherLoading,
     isError: weatherError,
     currentTemperature,
-    // forecast,
+    forecast,
     stationName,
     stationId,
   } = useWeatherData(coords);
 
+  const stationLabel: string | null =
+    !!stationName && !!stationId ? `${stationName} (${stationId})` : null;
+
+  if (geoError) {
+    return (
+      <div className="py-4 px-2">
+        <Error>Error getting the current location</Error>
+      </div>
+    );
+  }
+
+  if (weatherError) {
+    return (
+      <div className="py-4 px-2">
+        <Error>Error getting weather data</Error>
+      </div>
+    );
+  }
+
+  if (weatherLoading || geoLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
+      {stationLabel && (
+        <p className="leading-loose text-sm text-center">{stationLabel}</p>
+      )}
+      <div className="py-4">
+        <div className="w-32 h-32 mx-auto flex items-center justify-center shadow-sm rounded-lg">
+          <p className="text-4xl">{currentTemperature.f} &deg; F</p>
+        </div>
       </div>
-      <h1>Weather App</h1>
-      <p>Welcome to my weather app</p>
-
-      <table>
-        <tbody>
-          <tr>
-            <td>Geolocation Loading</td>
-            <td>{geoLoading ? "TRUE" : "FALSE"}</td>
-          </tr>
-          <tr>
-            <td>Geolocation Error</td>
-            <td>{geoError ? "TRUE" : "FALSE"}</td>
-          </tr>
-          <tr>
-            <td>Weather Loading</td>
-            <td>{weatherLoading ? "TRUE" : "FALSE"}</td>
-          </tr>
-          <tr>
-            <td>Weather Error</td>
-            <td>{weatherError ? "TRUE" : "FALSE"}</td>
-          </tr>
-          <tr>
-            <td>Station</td>
-            <td>
-              {!!stationId && !!stationName
-                ? `${stationName} (${stationId})`
-                : "---"}
-            </td>
-          </tr>
-          <tr>
-            <td>Current Temperature</td>
-            <td>
-              {!!currentTemperature.c && !!currentTemperature.f
-                ? `${currentTemperature.c}C / ${currentTemperature.f}F`
-                : "---"}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <WeatherForecast forecast={forecast} />
     </>
   );
 }

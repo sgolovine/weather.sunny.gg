@@ -10,4 +10,5 @@ export type Forecast = {
   shortForecast: string;
   detailedForecast: string;
   percentPrecipitation: number;
+  windLabel: string;
 }[];

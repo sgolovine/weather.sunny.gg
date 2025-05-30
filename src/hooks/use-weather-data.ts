@@ -93,6 +93,10 @@ export const useWeatherData = (coords: GeolocationCoordinates | null) => {
   }, [latestObservationQuery.data?.data.properties.temperature]);
 
   const forecast = useMemo(() => {
+    console.log(
+      "forecastQuery?.data?.data?.properties",
+      forecastQuery?.data?.data?.properties
+    );
     const periods = forecastQuery?.data?.data?.properties?.periods ?? [];
 
     const forecast: Forecast = periods.map((period) => {
@@ -107,12 +111,15 @@ export const useWeatherData = (coords: GeolocationCoordinates | null) => {
               c: period.temperature,
             };
 
+      const windLabel = `${period.windDirection} ${period.windSpeed}`;
+
       return {
         name: period.name,
         temperature,
         shortForecast: period.shortForecast,
         detailedForecast: period.detailedForecast,
         percentPrecipitation: period.probabilityOfPrecipitation?.value ?? 0,
+        windLabel,
       };
     });
 
